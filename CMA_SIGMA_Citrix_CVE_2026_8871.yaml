@@ -1,0 +1,93 @@
+## CISA Code & Media Analysis ##
+############ README ###############
+## Edit rules and queries as needed for your hunt and based on your environment.
+## Ensure your EDR/SIEM instance has enough memory to run these AND/OR condition based queries. May take longer to run than conventional Sigma rule query. 
+## Do not edit "logsource-product:" unless you are editing this rule to meet specific logsources/fields and know your environment.
+## TLP GREEN + Please use local installation of Sigma to convert this rule.
+## TLP CLEAR may convert rules using online converter of choice.
+###################################
+
+title: Citrix NetScaler Detection CVE_2026_88771 and CVE_2026_88772
+tlp: CLEAR
+id: 
+status: test
+description: Detects known exploitation and post-exploitation activity associated with Citrix NetScaler CVE-2026-88771 and related indicators observed during exploitation of Citrix NetScaler vulnerabilities.
+
+references:
+    - https://www.cert.europa.eu/blog/taking-execute-logging-a-bit-too-literally-cve-2026-88771
+    - https://support.citrix.com/external/article/CTX697096
+    - https://github.com/watchtowrlabs/watchTowr-vs-Citrix-Netscaler-CVE-2026-88771
+    - https://www.cybermaxx.com/resources/patches-required-citrix-netscaler-vulns-exploited-in-the-wild-cve-2026-88771-and-cve-2026-88772/
+author: CISA Code & Media Analysis
+date: 2026/09/29
+modified: 2026/09/29
+logsource:
+    product: blank
+    #can replace product with windows. Once you get query you can take out anything extra, but creation of query will not work if logsource is empty
+detection:
+
+    keywords:
+        - 'pitboss PPE unexpectedly died NSPPE'
+        - 'pitboss PPE unexpectedly died'
+
+    keywords_1:
+        - 'pitboss PPE missed too many heartbeats'
+        - 'PPE missed too many heartbeats'
+
+    keywords_2:
+        - 'login=pitboss PPE unexpectedly died NSPPE'
+        - 'login=pitboss%20PPE%20unexpectedly%20died%20NSPPE'
+        - 'login=pitboss%20PPE%20unexpectedly%20died%20NSPPE%3B'
+
+    keywords_3:
+        - '/nf/auth/doAuthentication.do'
+
+    keywords_4:
+        - '/var/netscaler/logon/LogonPoint/custom/.ctxs.receiver'
+
+    keywords_5:
+        - '/vpn/scripts/linux/nsgclient18.deb'
+
+    keywords_6:
+        - '/vpn/scripts/linux/nsgclient18_32.deb'
+
+    keywords_7:
+        - '/netscaler/ns_monuploadd_err.pl'
+
+    keywords_8:
+        - 'ns_monuploadd_err.pl'
+
+    keywords_9:
+        - 'b64decode -r'
+        - 'b64decode${IFS}-r'
+
+    keywords_10:
+        - 'INDEX:'
+
+    keywords_11:
+        - 'grep${IFS}INDEX:'
+        - 'grep${IFS}INDEX:${IFS}/var/log/htt'
+
+    keywords_12:
+        - 'sed${IFS}'
+        - 's/.*INDEX://'
+
+    keywords_13:
+        - '|sh'
+        - '| sh'
+
+    keywords_14:
+        - 'ns_monuploadd_err.pl -WR'
+
+    condition:
+        (keywords and keywords_3)
+        or (keywords_2 and keywords_3)
+        or (keywords_1 and keywords_10 and keywords_9)
+        or (keywords_11 and keywords_9 and keywords_13)
+        or keywords_14
+        or (keywords_4 and (keywords_5 or keywords_6))
+        or (keywords_4 and keywords_7)
+
+falsepositives:
+    - Legitimate Citrix NetScaler administrative activity
+level: critical
