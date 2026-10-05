@@ -9,7 +9,7 @@
 
 title: Citrix NetScaler Detection CVE_2026_88771 and CVE_2026_88772
 tlp: CLEAR
-id: 
+id: 825459eb-2e85-475d-99c9-f63425f987b7
 status: test
 description: Detects known exploitation and post-exploitation activity associated with Citrix NetScaler CVE-2026-88771 and related indicators observed during exploitation of Citrix NetScaler vulnerabilities.
 
@@ -54,9 +54,6 @@ detection:
     keywords_7:
         - '/netscaler/ns_monuploadd_err.pl'
 
-    keywords_8:
-        - 'ns_monuploadd_err.pl'
-
     keywords_9:
         - 'b64decode -r'
         - 'b64decode${IFS}-r'
@@ -67,10 +64,6 @@ detection:
     keywords_11:
         - 'grep${IFS}INDEX:'
         - 'grep${IFS}INDEX:${IFS}/var/log/htt'
-
-    keywords_12:
-        - 'sed${IFS}'
-        - 's/.*INDEX://'
 
     keywords_13:
         - '|sh'
