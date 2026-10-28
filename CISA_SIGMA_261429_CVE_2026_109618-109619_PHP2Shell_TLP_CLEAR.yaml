@@ -133,6 +133,7 @@ detection:
         - 'php2shell-scan/109618'
         - 'php2shell-verify'
         - 'php2shell-poc'
+        - 'php2shell'
         - 'B7kQpoc618'
         - 'B7kQpoc619'
         - 'BGCTXBOUNDARY'
