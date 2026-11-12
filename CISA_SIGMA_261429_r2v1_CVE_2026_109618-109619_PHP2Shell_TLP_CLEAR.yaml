@@ -1,0 +1,244 @@
+                             ## CISA Threat Hunting ##
+
+                            ############ README ###############
+## Edit rules and queries as needed for your hunt and based on your environment.
+## Ensure your EDR/SIEM instance has enough memory to run these AND/OR condition based queries. May take longer to run than conventional Sigma rule query. 
+## Do not edit "logsource-product:" unless you are editing this rule to meet specific logsources/fields and know your environment.
+## TLP GREEN + Please use local installation of Sigma to convert this rule.
+## TLP CLEAR may convert rules using online converter of choice.
+                            ###################################
+
+title: Detects PHP2Shell CVE-2026-109618 CVE-2026-109619 RCE Exploitation Attempts
+incident: 261429.r2.v1
+tlp: CLEAR
+id: 741682b9-041e-4a31-b314-c58b15a82cf2
+status: test
+description: Detects potential PHP2Shell exploitation associated with CVE-2026-109618 and CVE-2026-109619 using HTTP request patterns, public exploit markers, PHP error messages, and reported infrastructure and IOCs.
+references:
+    - https://www.wiz.io/blog/php2shell-php-rce
+    - https://github.com/9bie/php2shell-bypass-aslr-exp/blob/4586f5cc120c82fd468b17469202bac629810ad9/exploit.py
+    - https://github.com/eness/php2shell-CVE-2026-109618-CVE-2026-109619-PoC/blob/main/poc_109618.py
+    - https://aws.amazon.com/blogs/security/amazon-threat-intelligence-identifies-php2shell-exploitation-prior-to-public-disclosure-in-madpot/
+    - https://www.sophos.com/en-us/blog/proof-of-concept-exploit-released-for-php-vulnerabilities-109618-109619
+    - https://www.crowdstrike.com/en-us/blog/crowdstrike-protects-customers-from-php-rce-zero-days/
+    - https://www.zestsecurity.io/resources/content/php2shell-mitigate-php-now-patch-when-it-ships
+    - https://arcticwolf.com/resources/blog/php2shell-critical-php-vulnerabilities-enable-unauthenticated-remote-code-execution/
+    - https://www.vulncheck.com/blog/php2shell-vulnerabilities
+    - https://github.com/cozybear-dev/cve-2026-109618
+    - https://hunt.io/blog/php2shell-honeypot-shells-root-palo-alto-firewalls
+    - https://www.catonetworks.com/blog/cato-ctrl-threat-research-php2shell-exploitation-attempts-in-the-wild/
+    - https://www.zscaler.com/blogs/security-research/cve-2026-109618-and-cve-2026-109619-php-vulnerable-unauthenticated-rce
+    - https://www.monarx.com/press-news/php2shell-exploitation-update-mass-scanning-no-confirmed-compromises
+author: CISA
+date: 2026-10-21
+modified: 2026-11-05
+tags: 
+    - cve.2026.109618
+    - cve.2026.109619
+    - bod.26.04
+logsource:
+    product: cisa
+detection:
+    keywords:
+        - 'POST'
+    keywords_1:
+        - 'index.php'
+    keywords_2:
+        - 'PHPSESSID'
+    keywords_3:
+        - 'PHP_SESSION_UPLOAD_PROGRESS'
+    keywords_4:
+        - 'php2shell'
+        - 'B7kQpoc61'
+        - 'BNDRY12345'
+        - 'filename'
+        - 'multipart/form-data'
+        - 'Content-Disposition: form-data'
+        - 'application/x-www-form-urlencoded'
+        - 'aaaaaaaaaaa'
+        - 'AAAAAAAAAAA'
+        - 'bbbbbbbbbbb'
+        - 'BBBBBBBBBBB'
+        - 'VVVVVVVVVVV'
+        - 'SSSSSSSSSSS'
+        - 'ppppppppppp'
+        - 'pwn'
+
+    keywords_5:
+        - 'PHP_SESSION_UPLOAD_PROGRESS'
+    keywords_6:
+        - 'php-cgi'
+        - 'apache2'
+        - 'httpd'
+        - 'php-fpm'
+        - 'mod-php'
+    keywords_7:
+        - '/bin/sh'
+        - '/bin/bash'
+        - 'cmd'
+        - 'powershell'
+        - 'python'
+        - 'curl'
+        - 'wget'
+        - 'netcat'
+        - 'nc'
+        - 'whoami'
+        - 'id'
+        - 'uname '
+
+    keywords_8:
+        - 'PHP Fatal error:'
+    keywords_9:
+        - 'Allowed memory'
+    keywords_10:
+        - ' in Unknown '
+
+    keywords_11:
+        - '<'
+    keywords_12:
+        - 'php'
+    keywords_13:
+        - 'echo'
+    keywords_14:
+        - 'system'
+    keywords_15:
+        - "($_GET['"
+    keywords_16:
+        - '>'
+
+    keywords_17:
+        - 'pDestructor'
+    keywords_18:
+        - 'zif_system'
+    keywords_19:
+        - 'libphp.so'
+
+    keywords_20:
+        - 'multipart'
+    keywords_21:
+        - 'PHP_SESSION_UPLOAD_PROGRESS'
+    keywords_22:
+        - 'very large'
+    keywords_23:
+        - 'request'
+        - 'repeated' 
+    keywords_24:
+        - 'fields'
+        - 'form-data'
+    keywords_25:
+        - 'memory'
+
+    keywords_26:
+        - 'Set-Cookie'
+    keywords_27:
+        - 'PHPSESSID'
+    keywords_28:
+        - 'unusually large cookie value'
+
+    keywords_29:
+        - '103.216.220.92'
+        - '31.223.184.166'
+        - '37.19.200.5'
+        - '134.209.159.64'
+        - '103.114.163.188'
+        - '95.217.98.37'
+        - '45.198.224.169'
+        - '92.118.112.100'
+        - '134.199.154.64'
+        - '117.55.202.115'
+        - '85.11.167.243'
+        - '221.14.159.134'
+        - '109.71.252.97'
+        - '91.90.123.25'
+        - '15.204.59.70'
+        - '162.35.99.94'
+        - '2.59.133.151'
+        - '172.234.200.18'
+        - '143.246.223.124'
+        - '38.60.206.217'
+        - '176.124.32.170'
+        - '185.225.191.232'
+        - '2.27.248.209'
+        - '147.182.234.126'
+        - '31.56.53.223'
+        - '104.248.145.184'
+        - '49.43.128.164'
+        - '3.144.181.153'
+        - '77.90.185.20'
+        - '18.225.170.231'
+        - '169.58.138.154'
+        - '23.226.136.36'
+        - '78.17.70.38'
+        - '135.136.21.120'
+        - '81.17.100.107'
+        - '208.115.245.98'
+        - '208.115.245.99'
+        - '208.115.245.102'
+        - '185.242.106.140'
+        - '45.39.190.176'
+        - '130.94.67.235'
+        - '45.83.180.113'
+        - '85.121.179.129'
+        - '34.146.20.31'
+        - '96.126.130.81'
+        - '101.133.233.159'
+        - '144.217.161.236'
+        - '152.42.245.8'
+        - '23.27.25.75'
+        - '130.12.180.89'
+        - '45.225.135.53'
+        - '18.136.195.202'
+        - '38.60.136.217'
+        - '95.41.54.130'
+        - '198.41.83.165'
+        - '198.41.83.174'
+        - 'thunder.godofthunder.st'
+        - 'hackattackkaboom.botlesscucks.st'
+        - 'hik.gettingheadfromduckysmom.st'
+        - 'b61a098fc62a2c2696e196dca78da71a'
+        - 'c472dab4ff7c16782a8037f988d4daa6d4bdb343'
+        - '0c5486f06620e26e316f4b33f318b0d646d5e1133789331aa2fed012360d1486'
+        - '267a3c8ed021a0a52c29bf076617a0dfd5cd5285202b8d0bd9ad0712110ccae8'
+        - 'e2529d4afa39ae4db2eb05d5176317c906289abf09660c75bdeec43e54c55aa3'
+        - '150ae88f0999032e2a6113501d6082f54a3ed98d02427b21a96e773a27d7bf16'
+        - '40caf199ca1ebe056a74427f8e9db06c66899e33ae09c0ec2769ec70bf6dd8e7'
+        - '27d926a6708d6769d97d065e7a5a860ab496eab272c03d1cebc55ec71b954fa2'
+        - '1485e14e0f62bc94664eec341cabd275dad7d30b1d496c40ec340c9a0d9f0ba8'
+        - '535b9e298defd3449ba2b10b9828925d3ce344872dcbd9470c0e8db20f0aae83'
+        - '6f84cc354b785157983efa8f4b674d2e1d6c3331017f29ff8d51bc43668d4b0f'
+        - '2d692ee6dcb41c249c55881897b7dec0550b92963e07fccdb11ad655601977c3'
+        - '66bcbc8c2b9d847a1e976e57972e10eac98e9b894cbf30510bff1e8d63efb81f'
+        - '1c93ea48fa7ff886a6d81e44869dd7962309e95d01c1561df362b0b18007a562'
+        - '9c15dc5a510bf2e8a16c846e61fa35c50ef733b72d4e47b6e8307498a398443c'
+        - 'c1e81cfbaf7e4cccad7d7f43c1a624b791ba1b7f1d176e224455138604837b4c'
+        - '5e99d6023dce9bb18d845a37fcdbc7ea574fdb20ab8d888ec54c695382d46036'
+        - 'xqsuvwz3n97wu8j3emz1axuo5y'
+        - 'p2s9rdme2st6guc9g0rafic'
+        - 'php-upload-progress-scan'
+        - 'php2shell-scan'
+        - 'php2shell-scan/109618'
+        - 'php2shell-verify'
+        - 'php2shell-poc'
+        - 'php2shell'
+        - 'shellflow'
+        - 'php2scan'
+        - 'p2sleak'
+        - 'p2s.txt'
+        - 'php://filter'
+        - 'PWNED::'
+        - 'p2shell'
+        - 'B7kQpoc618'
+        - 'B7kQpoc619'
+        - 'BGCTXBOUNDARY'
+        - './nfs php'
+
+    condition: keywords and keywords_1 and keywords_2 and keywords_3 and keywords_4 or keywords_5 and keywords_6 and keywords_7 or keywords_8 and keywords_9 and keywords_10 or keywords_11 and keywords_12 and keywords_13 and keywords_14 and keywords_15 and keywords_16 or keywords_17 and keywords_18 and keywords_19 or keywords_20 and keywords_21 and keywords_22 and keywords_23 and keywords_24 and keywords_25 or keywords_26 and keywords_27 and keywords_28 or keywords_29
+
+falsepositives:
+    - Rate of FP medium-high with some strings/branches. 
+    - Use this rule in an infected environment/logs.
+    - Analyst may need to tune and make adjustments to the query as required.
+
+level: critical
+
+
